@@ -610,6 +610,40 @@ data$`Code Review` &lt;- data$`Final.Scores`/(9*2)</code></pre>
 ##   &lt;chr&gt;             &lt;dbl&gt;          &lt;dbl&gt; &lt;int&gt;
 ## 1 AI                0.850          0.119    17
 ## 2 Manual            0.637          0.168    17</code></pre>
+<p>Checking for normal distributions of the above measurements, where
+p&gt;.05 indicates normal distribution</p>
+<pre class="r"><code>shapiro.test(data$AI_Efficacy)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  data$AI_Efficacy
+## W = 0.94044, p-value = 0.06356</code></pre>
+<pre class="r"><code>shapiro.test(data$`AI Duration`)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  data$`AI Duration`
+## W = 0.8261, p-value = 8.55e-05</code></pre>
+<pre class="r"><code>shapiro.test(data$`AI Frequency`)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  data$`AI Frequency`
+## W = 0.72339, p-value = 1.147e-06</code></pre>
+<pre class="r"><code>shapiro.test(data$CRT)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  data$CRT
+## W = 0.85155, p-value = 0.0003032</code></pre>
+<pre class="r"><code>shapiro.test(data$`Code Review`)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  data$`Code Review`
+## W = 0.95447, p-value = 0.167</code></pre>
+<p>AI Efficacy and Code Review are normally distributed, but the others
+are not.</p>
 </div>
 
 

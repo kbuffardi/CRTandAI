@@ -168,4 +168,13 @@ data %>%
   filter(Group %in% c("AI", "Manual"))
 ```
 
+Checking for normal distributions of the above measurements, where p>.05 indicates normal distribution
 
+```{r distributions}
+shapiro.test(data$AI_Efficacy)
+shapiro.test(data$`AI Duration`)
+shapiro.test(data$`AI Frequency`)
+shapiro.test(data$CRT)
+shapiro.test(data$`Code Review`)
+```
+AI Efficacy and Code Review are normally distributed, but the others are not.
