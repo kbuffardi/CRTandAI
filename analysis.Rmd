@@ -1,0 +1,171 @@
+---
+title: "Congitive Reflection Test and AI - analysis"
+author: "Kevin Buffardi"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    toc: true
+    toc_float: false
+    number_sections: true
+    theme: readable
+    highlight: textmate
+    smart: true
+    df_print: tibble
+    code_folding: show
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
+library(readxl)
+library(stats)
+```
+
+## Importing data
+
+```{r import}
+data <- read.csv("experiment.csv")
+```
+
+## Summarize instruments
+
+```{r summarize}
+# From AI efficacy instrument, count proportions of YES to all responses (disregarding non-responses)
+data <- data %>% 
+  mutate(
+    AI_Efficacy = {
+      responses <- as.data.frame(pick(
+        `I.believe.that.AI.is.a.tool.to.enhance.my.learning.experience..rather.than.just.a.means.to.finish.assignments`:
+        `I.understand.that.AI.technology.sometimes.gives.a.biased.output`
+      ))
+
+      yes_count <- rowSums(responses == "Yes", na.rm = TRUE)
+      yn_count  <- rowSums(responses == "Yes" | responses == "No", na.rm = TRUE)
+
+      if_else(yn_count > 0, yes_count / yn_count, NA_real_)
+    }
+  )
+
+# From AI experience, set ordinal value
+data <- data %>%
+  mutate(
+    `AI Duration` = case_when(
+      `How.long.have.you.been.using.AI.for.software.engineering.` == "Never" ~ 0,
+      `How.long.have.you.been.using.AI.for.software.engineering.` == "<= 1 year" ~ 1,
+      `How.long.have.you.been.using.AI.for.software.engineering.` == "<= 2 years" ~ 2,
+      `How.long.have.you.been.using.AI.for.software.engineering.` == "<= 3 years" ~ 3,
+      `How.long.have.you.been.using.AI.for.software.engineering.` == "<= 4 years" ~ 4,
+      TRUE ~ NA_real_
+    )
+  )
+
+# From AI frequency, set ordinal value
+data <- data %>%
+  mutate(
+    `AI Frequency` = case_when(
+      `How.often.do.you.use.AI.for.software.engineering.on.an.average.week.` == "Never" ~ 0,
+      `How.often.do.you.use.AI.for.software.engineering.on.an.average.week.` == "1-3 times a week" ~ 1,
+      `How.often.do.you.use.AI.for.software.engineering.on.an.average.week.` == "4-6 times a week" ~ 2,
+      `How.often.do.you.use.AI.for.software.engineering.on.an.average.week.` == "7-10 times a week" ~ 3,
+      `How.often.do.you.use.AI.for.software.engineering.on.an.average.week.` == "Greater than 10 times a week" ~ 4,
+      TRUE ~ NA_real_
+    )
+  )
+
+# From CRT questions to results
+data <- data %>%
+  mutate(
+    CRT = rowMeans(
+      pick(
+        Q25.Points,
+        Q26.Points,
+        Q27.Points,
+        Q28.Points,
+        Q29.Points,
+        Q30.Points,
+        Q31.Points
+      ),
+      na.rm = TRUE
+    )
+  )
+
+# From Code Review questions to percentage
+data$`Code Review` <- data$`Final.Scores`/(9*2)
+```
+
+## Describe data
+
+
+
+AI Efficacy between groups:
+
+```{r descriptive_efficacy}
+data %>%
+  group_by(Group) %>%
+  summarise(
+    mean_code_review = mean(`AI_Efficacy`, na.rm = TRUE),
+    sd_code_review = sd(`AI_Efficacy`, na.rm = TRUE),
+    n = sum(!is.na(`AI_Efficacy`)),
+    .groups = "drop"
+  ) %>%
+  filter(Group %in% c("AI", "Manual"))
+```
+
+AI Duration of use between groups:
+
+```{r descriptive_duration}
+data %>%
+  group_by(Group) %>%
+  summarise(
+    mean_code_review = mean(`AI Duration`, na.rm = TRUE),
+    sd_code_review = sd(`AI Duration`, na.rm = TRUE),
+    n = sum(!is.na(`AI Duration`)),
+    .groups = "drop"
+  ) %>%
+  filter(Group %in% c("AI", "Manual"))
+```
+
+AI Frequency of use between groups:
+
+```{r descriptive_frequency}
+data %>%
+  group_by(Group) %>%
+  summarise(
+    mean_code_review = mean(`AI Frequency`, na.rm = TRUE),
+    sd_code_review = sd(`AI Frequency`, na.rm = TRUE),
+    n = sum(!is.na(`AI Frequency`)),
+    .groups = "drop"
+  ) %>%
+  filter(Group %in% c("AI", "Manual"))
+```
+
+CRT between groups:
+
+```{r descriptive_CRT}
+data %>%
+  group_by(Group) %>%
+  summarise(
+    mean_code_review = mean(`CRT`, na.rm = TRUE),
+    sd_code_review = sd(`CRT`, na.rm = TRUE),
+    n = sum(!is.na(`CRT`)),
+    .groups = "drop"
+  ) %>%
+  filter(Group %in% c("AI", "Manual"))
+```
+
+Code Review between groups:
+
+```{r descriptive_code_review}
+data %>%
+  group_by(Group) %>%
+  summarise(
+    mean_code_review = mean(`Code Review`, na.rm = TRUE),
+    sd_code_review = sd(`Code Review`, na.rm = TRUE),
+    n = sum(!is.na(`Code Review`)),
+    .groups = "drop"
+  ) %>%
+  filter(Group %in% c("AI", "Manual"))
+```
+
+
