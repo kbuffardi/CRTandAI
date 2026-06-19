@@ -461,6 +461,7 @@ analysis</h1>
 <li><a href="#summarize-instruments" id="toc-summarize-instruments"><span class="toc-section-number">2</span>
 Summarize instruments</a></li>
 <li><a href="#describe-data" id="toc-describe-data"><span class="toc-section-number">3</span> Describe data</a></li>
+<li><a href="#analysis" id="toc-analysis"><span class="toc-section-number">4</span> Analysis</a></li>
 </ul>
 </div>
 
@@ -644,6 +645,56 @@ p&gt;.05 indicates normal distribution</p>
 ## W = 0.95447, p-value = 0.167</code></pre>
 <p>AI Efficacy and Code Review are normally distributed, but the others
 are not.</p>
+</div>
+<div id="analysis" class="section level2" number="4">
+<h2><span class="header-section-number">4</span> Analysis</h2>
+<p><strong>Which of these factors help predict Code Review
+efficacy?</strong></p>
+<pre class="r"><code>summary(lm(`Code Review` ~ CRT + `AI_Efficacy` + `AI Duration` + `AI Frequency`, data))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = `Code Review` ~ CRT + AI_Efficacy + `AI Duration` + 
+##     `AI Frequency`, data = data)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.243485 -0.039651 -0.009269  0.069620  0.217016 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)     0.33020    0.22673   1.456    0.156    
+## CRT             0.59792    0.11755   5.087 1.99e-05 ***
+## AI_Efficacy    -0.01557    0.21902  -0.071    0.944    
+## `AI Duration`  -0.03621    0.02689  -1.346    0.189    
+## `AI Frequency`  0.02402    0.02054   1.169    0.252    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.1287 on 29 degrees of freedom
+## Multiple R-squared:  0.5476, Adjusted R-squared:  0.4852 
+## F-statistic: 8.777 on 4 and 29 DF,  p-value: 9.037e-05</code></pre>
+<p>Only CRT is a significant predictor so recalculating the regression
+by removing non-significant factors:</p>
+<pre class="r"><code>summary(lm(`Code Review` ~ CRT, data))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = `Code Review` ~ CRT, data = data)
+## 
+## Residuals:
+##       Min        1Q    Median        3Q       Max 
+## -0.302526 -0.060076 -0.000746  0.078812  0.229027 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  0.28743    0.08342   3.446  0.00161 ** 
+## CRT          0.60976    0.10756   5.669 2.84e-06 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.1287 on 32 degrees of freedom
+## Multiple R-squared:  0.5011, Adjusted R-squared:  0.4855 
+## F-statistic: 32.14 on 1 and 32 DF,  p-value: 2.836e-06</code></pre>
+<p>CRT predicts 48.55% of Code Review scores.</p>
 </div>
 
 
