@@ -11,7 +11,7 @@
 
 <meta name="author" content="Kevin Buffardi" />
 
-<meta name="date" content="2026-06-18" />
+<meta name="date" content="2026-06-20" />
 
 <title>Congitive Reflection Test and AI - analysis</title>
 
@@ -451,7 +451,7 @@ display: none;
 <h1 class="title toc-ignore">Congitive Reflection Test and AI -
 analysis</h1>
 <h4 class="author">Kevin Buffardi</h4>
-<h4 class="date">2026-06-18</h4>
+<h4 class="date">2026-06-20</h4>
 
 </div>
 
@@ -461,7 +461,11 @@ analysis</h1>
 <li><a href="#summarize-instruments" id="toc-summarize-instruments"><span class="toc-section-number">2</span>
 Summarize instruments</a></li>
 <li><a href="#describe-data" id="toc-describe-data"><span class="toc-section-number">3</span> Describe data</a></li>
-<li><a href="#analysis" id="toc-analysis"><span class="toc-section-number">4</span> Analysis</a></li>
+<li><a href="#analysis" id="toc-analysis"><span class="toc-section-number">4</span> Analysis</a>
+<ul>
+<li><a href="#compare-between-chatgpt-access-ai-and-without-manual" id="toc-compare-between-chatgpt-access-ai-and-without-manual"><span class="toc-section-number">4.1</span> Compare between ChatGPT access
+(AI) and without (Manual)</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -650,51 +654,132 @@ are not.</p>
 <h2><span class="header-section-number">4</span> Analysis</h2>
 <p><strong>Which of these factors help predict Code Review
 efficacy?</strong></p>
-<pre class="r"><code>summary(lm(`Code Review` ~ CRT + `AI_Efficacy` + `AI Duration` + `AI Frequency`, data))</code></pre>
+<pre class="r"><code>summary(lm(`Code Review` ~ Group + CRT + `AI_Efficacy` + `AI Duration` + `AI Frequency`, data))</code></pre>
 <pre><code>## 
 ## Call:
-## lm(formula = `Code Review` ~ CRT + AI_Efficacy + `AI Duration` + 
+## lm(formula = `Code Review` ~ Group + CRT + AI_Efficacy + `AI Duration` + 
 ##     `AI Frequency`, data = data)
 ## 
 ## Residuals:
-##       Min        1Q    Median        3Q       Max 
-## -0.243485 -0.039651 -0.009269  0.069620  0.217016 
+##      Min       1Q   Median       3Q      Max 
+## -0.21623 -0.05677 -0.01338  0.10902  0.18157 
 ## 
 ## Coefficients:
-##                Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)     0.33020    0.22673   1.456    0.156    
-## CRT             0.59792    0.11755   5.087 1.99e-05 ***
-## AI_Efficacy    -0.01557    0.21902  -0.071    0.944    
-## `AI Duration`  -0.03621    0.02689  -1.346    0.189    
-## `AI Frequency`  0.02402    0.02054   1.169    0.252    
+##                Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)     0.51378    0.21963   2.339  0.02669 * 
+## GroupManual    -0.12509    0.04877  -2.565  0.01598 * 
+## CRT             0.43836    0.12434   3.526  0.00148 **
+## AI_Efficacy     0.02587    0.20123   0.129  0.89864   
+## `AI Duration`  -0.03871    0.02465  -1.571  0.12747   
+## `AI Frequency`  0.00505    0.02022   0.250  0.80457   
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.1287 on 29 degrees of freedom
-## Multiple R-squared:  0.5476, Adjusted R-squared:  0.4852 
-## F-statistic: 8.777 on 4 and 29 DF,  p-value: 9.037e-05</code></pre>
+## Residual standard error: 0.1179 on 28 degrees of freedom
+## Multiple R-squared:  0.6337, Adjusted R-squared:  0.5683 
+## F-statistic: 9.687 on 5 and 28 DF,  p-value: 1.875e-05</code></pre>
 <p>Only CRT is a significant predictor so recalculating the regression
 by removing non-significant factors:</p>
-<pre class="r"><code>summary(lm(`Code Review` ~ CRT, data))</code></pre>
+<pre class="r"><code>summary(lm(`Code Review` ~ CRT + Group, data))</code></pre>
 <pre><code>## 
 ## Call:
-## lm(formula = `Code Review` ~ CRT, data = data)
+## lm(formula = `Code Review` ~ CRT + Group, data = data)
 ## 
 ## Residuals:
 ##       Min        1Q    Median        3Q       Max 
-## -0.302526 -0.060076 -0.000746  0.078812  0.229027 
+## -0.264224 -0.076342  0.001624  0.097312  0.168290 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  0.28743    0.08342   3.446  0.00161 ** 
-## CRT          0.60976    0.10756   5.669 2.84e-06 ***
+## (Intercept)  0.45270    0.09627   4.702 5.03e-05 ***
+## CRT          0.47240    0.10948   4.315 0.000151 ***
+## GroupManual -0.12508    0.04492  -2.784 0.009057 ** 
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.1287 on 32 degrees of freedom
-## Multiple R-squared:  0.5011, Adjusted R-squared:  0.4855 
-## F-statistic: 32.14 on 1 and 32 DF,  p-value: 2.836e-06</code></pre>
+## Residual standard error: 0.1169 on 31 degrees of freedom
+## Multiple R-squared:  0.6009, Adjusted R-squared:  0.5751 
+## F-statistic: 23.34 on 2 and 31 DF,  p-value: 6.56e-07</code></pre>
 <p>CRT predicts 48.55% of Code Review scores.</p>
+<div id="compare-between-chatgpt-access-ai-and-without-manual" class="section level3" number="4.1">
+<h3><span class="header-section-number">4.1</span> Compare between
+ChatGPT access (AI) and without (Manual)</h3>
+<pre class="r"><code>compare &lt;- wilcox.test(data$AI_Efficacy ~ data$`Group`, exact = FALSE)
+compare</code></pre>
+<pre><code>## 
+##  Wilcoxon rank sum test with continuity correction
+## 
+## data:  data$AI_Efficacy by data$Group
+## W = 123.5, p-value = 0.476
+## alternative hypothesis: true location shift is not equal to 0</code></pre>
+<p>No difference between groups (p=0.4759558) for AI Self-Efficacy</p>
+<pre class="r"><code>compare &lt;- wilcox.test(data$`AI Duration` ~ data$`Group`, exact = FALSE)
+compare</code></pre>
+<pre><code>## 
+##  Wilcoxon rank sum test with continuity correction
+## 
+## data:  data$`AI Duration` by data$Group
+## W = 126.5, p-value = 0.5119
+## alternative hypothesis: true location shift is not equal to 0</code></pre>
+<p>No difference between groups (p=0.511909) for AI Duration</p>
+<pre class="r"><code>compare &lt;- wilcox.test(data$`AI Frequency` ~ data$`Group`, exact = FALSE)
+compare</code></pre>
+<pre><code>## 
+##  Wilcoxon rank sum test with continuity correction
+## 
+## data:  data$`AI Frequency` by data$Group
+## W = 172, p-value = 0.2859
+## alternative hypothesis: true location shift is not equal to 0</code></pre>
+<p>No difference between groups (p=0.2859275) for AI Frequency</p>
+<pre class="r"><code>compare &lt;- wilcox.test(data$`CRT` ~ data$`Group`, exact = FALSE)
+compare</code></pre>
+<pre><code>## 
+##  Wilcoxon rank sum test with continuity correction
+## 
+## data:  data$CRT by data$Group
+## W = 220, p-value = 0.007587
+## alternative hypothesis: true location shift is not equal to 0</code></pre>
+<p>Significant difference between groups (p=0.0075867) for CRT</p>
+<pre class="r"><code>data %&gt;%
+  group_by(Group) %&gt;%
+  summarise(
+    mean_code_review = mean(`CRT`, na.rm = TRUE),
+    sd_code_review = sd(`CRT`, na.rm = TRUE),
+    n = sum(!is.na(`CRT`)),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  filter(Group %in% c(&quot;AI&quot;, &quot;Manual&quot;))</code></pre>
+<pre><code>## # A tibble: 2 × 4
+##   Group  mean_code_review sd_code_review     n
+##   &lt;chr&gt;             &lt;dbl&gt;          &lt;dbl&gt; &lt;int&gt;
+## 1 AI                0.840          0.174    17
+## 2 Manual            0.655          0.202    17</code></pre>
+<pre class="r"><code>compare &lt;- wilcox.test(data$`Code Review` ~ data$`Group`, exact = FALSE)
+compare</code></pre>
+<pre><code>## 
+##  Wilcoxon rank sum test with continuity correction
+## 
+## data:  data$`Code Review` by data$Group
+## W = 235.5, p-value = 0.001671
+## alternative hypothesis: true location shift is not equal to 0</code></pre>
+<p>Significant difference between groups (p=0.0016712) for Code
+Review</p>
+<pre class="r"><code>data %&gt;%
+  group_by(Group) %&gt;%
+  summarise(
+    mean_code_review = mean(`Code Review`, na.rm = TRUE),
+    sd_code_review = sd(`Code Review`, na.rm = TRUE),
+    n = sum(!is.na(`Code Review`)),
+    .groups = &quot;drop&quot;
+  ) %&gt;%
+  filter(Group %in% c(&quot;AI&quot;, &quot;Manual&quot;))</code></pre>
+<pre><code>## # A tibble: 2 × 4
+##   Group  mean_code_review sd_code_review     n
+##   &lt;chr&gt;             &lt;dbl&gt;          &lt;dbl&gt; &lt;int&gt;
+## 1 AI                0.850          0.119    17
+## 2 Manual            0.637          0.168    17</code></pre>
+<p>End of analysis.</p>
+</div>
 </div>
 
 

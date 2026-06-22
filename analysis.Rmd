@@ -185,13 +185,75 @@ AI Efficacy and Code Review are normally distributed, but the others are not.
 **Which of these factors help predict Code Review efficacy?**
 
 ```{r analysis_multiple_regression}
-summary(lm(`Code Review` ~ CRT + `AI_Efficacy` + `AI Duration` + `AI Frequency`, data))
+summary(lm(`Code Review` ~ Group + CRT + `AI_Efficacy` + `AI Duration` + `AI Frequency`, data))
 ```
 
 Only CRT is a significant predictor so recalculating the regression by removing non-significant factors:
 
 ```{r analysis_linear_regression}
-summary(lm(`Code Review` ~ CRT, data))
+summary(lm(`Code Review` ~ CRT + Group, data))
 ```
 
 CRT predicts 48.55% of Code Review scores.
+
+### Compare between ChatGPT access (AI) and without (Manual)
+
+```{r analysis_groups_AI_Efficacy}
+compare <- wilcox.test(data$AI_Efficacy ~ data$`Group`, exact = FALSE)
+compare
+```
+
+No difference between groups (p=`r compare$p.value`) for AI Self-Efficacy
+
+```{r analysis_groups_AI_Duration}
+compare <- wilcox.test(data$`AI Duration` ~ data$`Group`, exact = FALSE)
+compare
+```
+No difference between groups (p=`r compare$p.value`) for AI Duration
+
+
+```{r analysis_groups_AI_Frequency}
+compare <- wilcox.test(data$`AI Frequency` ~ data$`Group`, exact = FALSE)
+compare
+```
+No difference between groups (p=`r compare$p.value`) for AI Frequency
+
+```{r analysis_groups_CRT}
+compare <- wilcox.test(data$`CRT` ~ data$`Group`, exact = FALSE)
+compare
+```
+
+Significant difference between groups (p=`r compare$p.value`) for CRT
+
+```{r analysis_CRT_by_group}
+data %>%
+  group_by(Group) %>%
+  summarise(
+    mean_code_review = mean(`CRT`, na.rm = TRUE),
+    sd_code_review = sd(`CRT`, na.rm = TRUE),
+    n = sum(!is.na(`CRT`)),
+    .groups = "drop"
+  ) %>%
+  filter(Group %in% c("AI", "Manual"))
+```
+
+```{r analysis_groups_Code_Review}
+compare <- wilcox.test(data$`Code Review` ~ data$`Group`, exact = FALSE)
+compare
+```
+
+Significant difference between groups (p=`r compare$p.value`) for Code Review
+
+```{r analysis_Code_Review_by_group}
+data %>%
+  group_by(Group) %>%
+  summarise(
+    mean_code_review = mean(`Code Review`, na.rm = TRUE),
+    sd_code_review = sd(`Code Review`, na.rm = TRUE),
+    n = sum(!is.na(`Code Review`)),
+    .groups = "drop"
+  ) %>%
+  filter(Group %in% c("AI", "Manual"))
+```
+
+End of analysis.
